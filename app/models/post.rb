@@ -3,9 +3,11 @@ class Post < ApplicationRecord
 
   def add_comment
     retries = 0
-    ApplicationRecord.transaction do
-      comment = Comment.new(post_id: id)
-      comment.save!
+    begin
+      ApplicationRecord.transaction do
+        comment = Comment.new(post_id: id)
+        comment.save!
+      end
     rescue ActiveRecord::Deadlocked => e
       if retries < 1
         retries += 1
